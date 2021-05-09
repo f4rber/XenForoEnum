@@ -2,6 +2,8 @@
 XenForo users bruteforce/enumeration
 
 ```
+Tested on XenForo 1.5.8 and XenForo 1.5.9
+
 Usage: main.py [-h] [-t THREADS] [-p] -u URL
 The following arguments are required: -u/--url
 ```
