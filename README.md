@@ -15,10 +15,10 @@ The file proxy.txt should look like this:
 212.191.78.146:8080
 62.171.177.80:3128
 
-With https proxy: 
+With socks5 proxy: 
 python3 main.py -u http://site.com/install/index.php?upgrade/login -p
 
-Without https proxy: 
+Without socks5 proxy: 
 python3 main.py -u http://site.com/install/index.php?upgrade/login
 
 Custom number of threads (default is 5): 
